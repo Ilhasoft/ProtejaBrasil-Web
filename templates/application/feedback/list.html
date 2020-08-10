@@ -1,0 +1,361 @@
+{% extends 'application/base.html' %}
+
+{% block title %}Opiniões - Proteja Brasil{% endblock %}
+
+{% block extracss %}
+    <style>
+        .form-horizontal a {
+            display: inline-block;
+        }
+
+        .button-filter {
+            float: right;
+            margin: 0 0 0 5px;
+        }
+
+        .btn-filter {
+            margin: 0 0 15px 0 !important;
+        }
+
+    </style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <ul class="breadcrumb">
+            <li class="active">Opiniões</li>
+        </ul>
+    </div>
+
+    <div class="row">
+        <div class="container">
+
+            <h2>
+                Opiniões
+            </h2>
+
+            <div class="row margin">
+
+                <div class="right col-lg-12">
+                    <form class="form-horizontal" action="" method="GET">
+                        <fieldset>
+                            <div class="form-group">
+
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <div class="row">
+                                                    <div class="col-lg-12">
+                                                        <div class="col-md-6">
+                                                            <div class="input-group">
+                                                                <span class="input-group-addon">De</span>
+                                                                <input type="text" class="datefield form-control" name="from"
+                                                                       value="{{ date_from }}"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="input-group">
+                                                                <span class="input-group-addon">Até</span>
+                                                                <input type="text" class="datefield form-control"
+                                                                       name="to" value="{{ date_to }}"/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-3">
+                                            <div class="form-group">
+                                                <div class="col-lg-12">
+                                                    <select class="form-control" id="select" name="type">
+                                                        <option value="all">Tipos de opinião</option>
+                                                        {% if types %}
+                                                            {% for type_ in types %}
+                                                                <option {% if type == type_.0 %}selected{% endif %}
+                                                                        value="{{ type_.0 }}">{{ type_.1 }}</option>
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-3">
+                                            <div class="form-group">
+                                                <div class="col-lg-12">
+                                                    <select class="form-control" id="select" name="platform">
+                                                        <option value="all">Plataforma</option>
+                                                        {% if platforms %}
+                                                            {% for platform_ in platforms %}
+                                                                <option {% if platform == platform_.0 %}selected{% endif %}
+                                                                        value="{{ platform_.0 }}">{{ platform_.1 }}</option>
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-lg-12">
+                                        <div class="col-lg-3">
+                                            <div class="form-group">
+                                                <div class="col-lg-12">
+                                                    <select class="form-control" id="select" name="status">
+                                                        <option value="all">Status</option>
+                                                        {% if all_status %}
+                                                            {% for status_ in all_status %}
+                                                                <option {% if status == status_.0 %}selected{% endif %}
+                                                                        value="{{ status_.0 }}">{{ status_.1 }}</option>
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-3 right">
+                                            <div class="form-group btn-filter">
+                                                <div class="col-lg-12" style="padding-right: 0">
+                                                    <button type="submit" class="btn btn-primary button-filter">
+                                                        <i class="glyphicon glyphicon-filter"></i>
+                                                        Filtrar
+                                                    </button>
+                                                    <a href="?" class="btn btn-default button-filter">
+                                                        <i class="glyphicon glyphicon-erase"></i>
+                                                        Limpar
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="table-responsive">
+
+                    {% if results %}
+
+                        <table class="table table-striped table-hover">
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tipo</th>
+                                <th>Nome</th>
+                                <th>E-mail</th>
+                                <th>Plataforma</th>
+                                <th>Versão</th>
+                                <th>Status</th>
+                                <th>Data</th>
+                                <th>Opções</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for result in results %}
+                                <tr>
+                                    <td>
+                                        {{ result.pk }}
+                                    </td>
+                                    <td>
+                                        {{ result.get_type }}
+                                    </td>
+                                    <td>
+                                        {{ result.name }}
+                                    </td>
+                                    <td>
+                                        {{ result.email }}
+                                    </td>
+                                    <td>
+                                        {% if result.platform == 'ios' %}
+                                            <i class="fa fa-apple"></i> iOS
+                                        {% elif result.platform == 'android' %}
+                                            <i class="fa fa-android"></i> Android
+                                        {% else %}
+                                            Não definido
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if result.version %}
+                                            {{ result.version }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if result.status == 'pending' %}
+                                            <i class="fa fa-minus"></i> Pendente
+                                        {% else %}
+                                            <i class="fa fa-check"></i> Resolvido
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {{ result.createdAt|date:'d/m/Y H:i' }}
+                                    </td>
+                                    <td>
+
+                                        <a href="" class="btn btn-info btn-sm" data-toggle="modal"
+                                           data-target="#viewer_{{ result.id }}" title="Visualizar">
+                                            <i class="glyphicon glyphicon-eye-open"></i>
+                                        </a>
+
+                                        {% if result.status == 'pending' %}
+                                            <a href="" class="btn btn-success btn-sm" data-toggle="modal"
+                                               data-target="#resolved_{{ result.id }}" title="Marcar como resolvida">
+                                                <i class="fa fa-check"></i>
+                                            </a>
+                                        {% endif %}
+
+                                        <div class="modal fade" id="viewer_{{ result.id }}" tabindex="-1"
+                                             role="dialog"
+                                             aria-labelledby="myModalLabel">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                                aria-hidden="true">×
+                                                        </button>
+                                                        <h4 class="modal-title">Visualizar</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>
+                                                            <strong>Tipo:</strong> {{ result.get_type }}
+                                                        </p>
+
+                                                        <p>
+                                                            <strong>Nome:</strong> {{ result.name }}
+                                                        </p>
+
+                                                        <p>
+                                                            <strong>E-mail:</strong> {{ result.email }}
+                                                        </p>
+
+                                                        <p>
+                                                            <strong>Plataforma:</strong>
+                                                            {% if result.platform == 'ios' %}
+                                                                <i class="fa fa-apple"></i> iOS
+                                                            {% elif result.platform == 'android' %}
+                                                                <i class="fa fa-android"></i> Android
+                                                            {% else %}
+                                                                Não definido
+                                                            {% endif %}
+                                                        </p>
+
+                                                        <p>
+                                                            <strong>Status:</strong>
+                                                            {% if result.status == 'pending' %}
+                                                                <i class="fa fa-minus"></i> Pendente
+                                                            {% else %}
+                                                                <i class="fa fa-check"></i> Resolvido
+                                                            {% endif %}
+                                                        </p>
+
+                                                        <p>
+                                                            <strong>Versão:</strong> {{ result.version }}
+                                                        </p>
+
+                                                        <p>
+                                                            <strong>Mensagem:</strong> {{ result.message }}
+                                                        </p>
+
+                                                        <p>
+                                                            <strong>Data de
+                                                                cadastro:</strong> {{ result.createdAt|date:'d/m/Y H:i' }}
+                                                        </p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-sm btn-default"
+                                                                data-dismiss="modal">Fechar
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="modal fade" id="resolved_{{ result.id }}" tabindex="-1"
+                                             role="dialog"
+                                             aria-labelledby="myModalLabel">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                                aria-hidden="true">×
+                                                        </button>
+                                                        <h4 class="modal-title">Marcar como resolvida</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>
+                                                            Deseja realmente marcar a opinião de {{ result.name }} ({{ result.createdAt|date:'d/m/Y H:i' }}) como resolvida?
+                                                        </p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-sm btn-default"
+                                                                data-dismiss="modal">Fechar
+                                                        </button>
+                                                        <a href="{% url 'app_feedback_as_resolved' result.id %}" class="btn btn-sm btn-success">
+                                                            <i class="fa fa-check"></i> Marcar como resolvida
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <div class="alert alert-dismissible">
+                            Nada para exibir.
+                        </div>
+                    {% endif %}
+                </div>
+
+                {% ifequal results.paginator.num_pages 1 %}
+                {% else %}
+                    <div class="row" style="text-align: center">
+                        <ul class="pagination">
+                            {% if results.has_previous %}
+                                <li>
+                                    <a href="?{% if date_from %}from={{ date_from }}&{% endif %}{% if date_to %}to={{ date_to }}&{% endif %}{% if type %}type={{ type }}&{% endif %}{% if platform %}platform={{ platform }}&{% endif %}{% if status %}status={{ status }}&{% endif %}pagina={{ results.previous_page_number }}">«</a>
+                                </li>
+                            {% else %}
+                                <li class="disabled"><a href="">«</a></li>
+                            {% endif %}
+
+                            {% for num in count_pages %}
+                                {% ifequal num results.number %}
+                                    <li class="active"><a href="">{{ num }}</a></li>
+                                {% else %}
+                                    <li>
+                                        <a href="?{% if date_from %}from={{ date_from }}&{% endif %}{% if date_to %}to={{ date_to }}&{% endif %}{% if type %}type={{ type }}&{% endif %}{% if platform %}platform={{ platform }}&{% endif %}{% if status %}status={{ status }}&{% endif %}pagina={{ num }}">{{ num }}</a>
+                                    </li>
+                                {% endifequal %}
+                            {% endfor %}
+
+                            {% if results.has_next %}
+                                <li>
+                                    <a href="?{% if date_from %}from={{ date_from }}&{% endif %}{% if date_to %}to={{ date_to }}&{% endif %}{% if type %}type={{ type }}&{% endif %}{% if platform %}platform={{ platform }}&{% endif %}{% if status %}status={{ status }}&{% endif %}pagina={{ results.next_page_number }}">»</a>
+                                </li>
+                            {% else %}
+                                <li class="disabled"><a href="">»</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                {% endifequal %}
+
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}

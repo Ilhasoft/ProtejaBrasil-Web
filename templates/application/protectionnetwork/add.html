@@ -1,0 +1,262 @@
+{% extends 'application/base.html' %}
+
+{% block title %}Redes de proteção - Proteja Brasil{% endblock %}
+
+{% block extracss %}
+    <style>
+        .tab-content {
+            margin: 20px 0 0 0;
+        }
+    </style>
+{% endblock %}
+
+{% block extrajs %}
+    {{ form.media }}
+
+    <script>
+        $(document).ready(function () {
+            $(".geoposition-widget").on("change click mousemove mouseout mouseenter", function () {
+                var address_full = $('.geoposition-address').text();
+
+                if (address_full.length > 0) {
+                    address_full = address_full.split(",");
+
+                    if (address_full.length == 5) {
+
+                        var address = address_full[0];
+                        var cep = address_full[3];
+                        cep = cep.replace(' ', '');
+
+                        if (cep) {
+                            if (cep.length == 9) {
+                                cep = address_full[3];
+                            } else {
+                                cep = ' ';
+                            }
+                        }
+
+                        var city_full = address_full[2];
+                        city_full = city_full.split("-");
+                        var city = city_full[0].replace(' ', '');
+
+                        var neighborhood_full = address_full[1];
+                        neighborhood_full = neighborhood_full.split("-");
+                        neighborhood_full = neighborhood_full.reverse();
+                        var neighborhood = neighborhood_full[0].replace(' ', '');
+
+                        $('#id_address').attr('value', address);
+                        $('#id_zipcode').attr('value', cep);
+                        $('#id_neighborhood').attr('value', neighborhood);
+                        $('#id_city').attr('value', city);
+
+                    } else {
+                        $('#id_address').attr('value', '');
+                        $('#id_zipcode').attr('value', '');
+                        $('#id_neighborhood').attr('value', '');
+                        $('#id_city').attr('value', '');
+                    }
+
+                }
+
+            });
+        });
+    </script>
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <ul class="breadcrumb">
+            <li>
+                <a href="{% url 'app_protectionnetworklist' %}">
+                    Redes de proteção
+                </a>
+            </li>
+            <li class="active">Adicionar</li>
+        </ul>
+    </div>
+
+    <div class="row">
+        <div class="container col-lg-6" style="float: none;">
+
+            <h2>
+                Adicionar rede de proteção
+
+                <a href="javascript:history.back();" class="back">
+                    <i class="glyphicon glyphicon-chevron-left"></i> voltar
+                </a>
+
+            </h2>
+
+            <form class="form-horizontal" action="{% url 'app_protectionnetworkadd' %}" method="POST"
+                  enctype="multipart/form-data">
+                {% csrf_token %}
+                <fieldset>
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#pt" data-toggle="tab" aria-expanded="true">Português</a></li>
+                        <li class=""><a href="#en" data-toggle="tab" aria-expanded="false">English</a></li>
+                        <li class=""><a href="#es" data-toggle="tab" aria-expanded="false">Español</a></li>
+                    </ul>
+                    <div id="myTabContent" class="tab-content">
+                        <div class="tab-pane fade active in" id="pt">
+                            <div class="form-group">
+                                <div class="col-lg-12">
+                                    <label for="id_name_es">{{ form_info.name_pt.label }}</label>
+                                    {{ form_info.name_pt }}
+                                    {{ form_info.name_pt.errors }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="en">
+                            <div class="form-group">
+                                <div class="col-lg-12">
+                                    <label for="id_name_en">{{ form_info.name_en.label }}</label>
+                                    {{ form_info.name_en }}
+                                    {{ form_info.name_en.errors }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="es">
+                            <div class="form-group">
+                                <div class="col-lg-12">
+                                    <label for="id_name_es">{{ form_info.name_es.label }}</label>
+                                    {{ form_info.name_es }}
+                                    {{ form_info.name_es.errors }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-12">
+                            <label for="id_type">Tipo *</label>
+                            {{ form.type }}
+                            {{ form.type.errors }}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-12">
+                            <label for="themes">Temas *</label>
+                            <select name="themes" multiple id="themes" class="form-control" required>
+                                {% for them in themes %}
+                                    <option value="{{ them.theme_id }}">{{ them }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-lg-12">
+                            <label for="id_position">Localização *</label>
+                            {{ form.position }}
+                            {{ form.position.errors }}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-lg-12">
+                            <label for="id_address">Logradouro *</label>
+                            {{ form.address }}
+                            {{ form.address.errors }}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="col-md-6">
+                                    <label for="id_zipcode">CEP *</label>
+                                    {{ form.zipcode }}
+                                    {{ form.zipcode.errors }}
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="id_neighborhood">Bairro *</label>
+                                    {{ form.neighborhood }}
+                                    {{ form.neighborhood.errors }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="col-md-6">
+                                    <label for="id_city">Cidade *</label>
+                                    {{ form.city }}
+                                    {{ form.city.errors }}
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="id_state">Estado *</label>
+                                    {{ form.state }}
+                                    {{ form.state.errors }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-lg-12">
+                            <label for="id_contact">Contato</label>
+                            {{ form.contact }}
+                            {{ form.contact.errors }}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="col-md-6">
+                                    <label for="id_phone1">Telefone 1 *</label>
+                                    {{ form.phone1 }}
+                                    {{ form.phone1.errors }}
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="id_phone2">Telefone 2</label>
+                                    {{ form.phone2 }}
+                                    {{ form.phone2.errors }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-lg-12">
+                            <label for="id_email">E-mail</label>
+                            {{ form.email }}
+                            {{ form.email.errors }}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="col-md-6">
+                                    <label for="days">Dias de atendimento *</label>
+                                    <select name="days" multiple id="days" class="form-control" required>
+                                        {% for day in days %}
+                                            <option value="{{ day.0 }}">{{ day.1 }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="id_schedule">Horário de funcionamento</label>
+                                    {{ form.schedule }}
+                                    {{ form.schedule.errors }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-lg-12">
+                            <button type="submit" class="btn btn-primary right">Salvar</button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}

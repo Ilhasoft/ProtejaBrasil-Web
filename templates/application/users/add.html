@@ -1,0 +1,180 @@
+{% extends 'application/base.html' %}
+
+{% block title %}Adicionar usuário - Proteja Brasil{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <ul class="breadcrumb">
+            <li>
+                <a href="{% url 'app_userslist' %}">
+                    Usuários
+                </a>
+            </li>
+            <li class="active">Adicionar</li>
+        </ul>
+    </div>
+
+    <div class="row">
+        <div class="container col-lg-6" style="float: none;">
+
+            <h2>
+                Adicionar usuário
+
+                <a href="javascript:history.back();" class="back">
+                    <i class="glyphicon glyphicon-chevron-left"></i> voltar
+                </a>
+
+            </h2>
+
+            <form class="form-horizontal" action="{% url 'app_usersadd' %}" method="POST">
+                {% csrf_token %}
+                <fieldset>
+                    <div class="form-group">
+                        <div class="col-lg-12">
+                            <label for="id_username">Usuário *</label>
+                            {{ form_user.username }}
+                            {{ form_user.username.errors }}
+                            <span class="help-block">
+                                30 caracteres ou menos. Somente letras, dígitos e @/./+/-/_
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-12">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="id_first_name">Nome *</label>
+                                    {{ form_user.first_name }}
+                                    {{ form_user.first_name.errors }}
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="id_last_name">Sobrenome *</label>
+                                    {{ form_user.last_name }}
+                                    {{ form_user.last_name.errors }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-12">
+                            <label for="id_email">E-mail *</label>
+                            {{ form_user.email }}
+                            {{ form_user.email.errors }}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="col-md-6">
+                                    <label for="id_password">Senha *</label>
+                                    {{ form_user.password }}
+                                    {{ form_user.password.errors }}
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="id_confirm_password">Confirmação da senha *</label>
+                                    {{ form_user.confirm_password }}
+                                    {{ form_user.confirm_password.errors }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="col-md-6">
+                                    <label for="id_institution">Instituição</label>
+                                    {{ form_user.institution }}
+                                    {{ form_user.institution.errors }}
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="id_departament">Departamento</label>
+                                    {{ form_user.departament }}
+                                    {{ form_user.departament.errors }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="col-md-6">
+                                    <label for="id_cell">Celular</label>
+                                    {{ form_user.cell }}
+                                    {{ form_user.cell.errors }}
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="id_phone">Telefone</label>
+                                    {{ form_user.phone }}
+                                    {{ form_user.phone.errors }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-lg-12">
+                            <label for="themes">Temas *</label>
+                            <select name="themes" multiple id="themes" class="form-control" required>
+                                {% for them in themes_user %}
+                                    <option value="{{ them.theme_id }}">{{ them }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-lg-12">
+                            <label for="uf">UF *</label>
+                            <select name="uf" multiple id="uf" class="form-control" required>
+                                {% for uf in uf_user %}
+                                    <option value="{{ uf.uf_id }}">{{ uf }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    {% if request.user.type == 'theme_admin' or request.user.is_superuser %}
+                        <div class="form-group">
+                            <div class="col-lg-12">
+                                {{ form_user.type }}
+                                {{ form_user.type.errors }}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="form-group">
+                        <div class="col-lg-12">
+                            <label for="permissions">Permissões</label>
+                            <select name="permissions" multiple id="permissions" class="form-control">
+                                {% for perm in permissions %}
+                                    <option value="{{ perm.id }}">{{ perm }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-lg-12">
+                            <label for="id_is_active">
+                                {{ form_user.is_active }} Ativo
+                            </label>
+                            {{ form_user.is_active.errors }}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-12">
+                            <button type="submit" class="btn btn-primary right">Salvar</button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+
+        </div>
+    </div>
+
+
+
+{% endblock %}

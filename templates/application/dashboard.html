@@ -1,0 +1,151 @@
+{% extends 'application/base.html' %}
+
+{% load l10n %}
+
+{% block title %}Dashboard - Proteja Brasil{% endblock %}
+
+{% block extrajs %}{% endblock %}
+
+{% block extracss %}{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="container">
+
+            <h2>
+                Dashboard
+            </h2>
+
+            <div class="row dashboard">
+
+                {% if 'list_typeviolation' in permissions_user_auth or request.user.type == 'theme_admin' %}
+
+                    <div class="col-lg-4 box">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">
+                                    <i class="glyphicon glyphicon-ban-circle"></i> Tipos de violação
+                                    <span class="badge right">{{ typeviolations_count }}</span>
+                                </h3>
+                            </div>
+                            <div class="panel-body">
+                                {% if typeviolations %}
+                                    <ul class="list-group">
+                                        <li class="list-group-item">
+                                            <strong>Tipo</strong>
+                                        </li>
+                                        {% for typev in typeviolations %}
+                                            <li class="list-group-item">
+                                                {{ typev.name }}
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                                <a href="{% url 'app_typesviolationlist' %}"
+                                   class="btn btn-primary btn-md btn-block">
+                                    Ver todos
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                {% endif %}
+
+                {% if 'list_user' in permissions_user_auth or request.user.type == 'theme_admin' %}
+
+                    <div class="col-lg-4 box">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">
+                                    <i class="glyphicon glyphicon-user"></i> Usuários
+                                    <span class="badge right">{{ users_count }}</span>
+                                </h3>
+                            </div>
+                            <div class="panel-body">
+                                {% if users %}
+                                    <ul class="list-group">
+                                        {% for user in users %}
+                                            <a href="{% url 'app_usersedit' user.id %}"
+                                               class="list-group-item">
+                                                {{ user.get_full_name }}
+                                            </a>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                                <a href="{% url 'app_userslist' %}" class="btn btn-primary btn-md btn-block">
+                                    Ver todos
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                {% endif %}
+
+                {% if 'list_typeprotectionnetwork' in permissions_user_auth or request.user.type == 'theme_admin' %}
+
+                    <div class="col-lg-4 box">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">
+                                    <i class="glyphicon glyphicon-chevron-right"></i> Tipos de redes de proteção
+                                    <span class="badge right">{{ typeprotectionnetwork_count }}</span>
+                                </h3>
+                            </div>
+                            <div class="panel-body">
+                                {% if typeprotectionnetwork %}
+                                    <ul class="list-group">
+                                        {% for typeprotnet in typeprotectionnetwork %}
+                                            <a href="{% url 'app_typesprotectionnetworkedit' typeprotnet.id %}"
+                                               class="list-group-item">
+                                                {{ typeprotnet.name }}
+                                            </a>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                                <a href="{% url 'app_typesprotectionnetworklist' %}"
+                                   class="btn btn-primary btn-md btn-block">
+                                    Ver todos
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                {% endif %}
+
+                {% if 'list_protectionnetwork' in permissions_user_auth or request.user.type == 'theme_admin' %}
+
+                    <div class="col-lg-4 box">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">
+                                    <i class="glyphicon glyphicon-globe"></i> Redes de proteção
+                                    <span class="badge right">{{ protectionnetwork_count }}</span>
+                                </h3>
+                            </div>
+                            <div class="panel-body">
+                                {% if protectionnetwork %}
+                                    <ul class="list-group">
+                                        {% for protnet in protectionnetwork %}
+                                            <a href="{% url 'app_protectionnetworkedit' protnet.id %}"
+                                               class="list-group-item">
+                                                {{ protnet.name }}
+                                            </a>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                                <a href="{% url 'app_protectionnetworklist' %}"
+                                   class="btn btn-primary btn-md btn-block">
+                                    Ver todas
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

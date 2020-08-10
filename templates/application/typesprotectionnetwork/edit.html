@@ -1,0 +1,104 @@
+{% extends 'application/base.html' %}
+
+{% block title %}Editar tipo de rede proteção - Proteja Brasil{% endblock %}
+
+{% block extracss %}
+    <style>
+        .tab-content {
+            margin: 20px 0 0 0;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <ul class="breadcrumb">
+            <li>
+                <a href="{% url 'app_typesprotectionnetworklist' %}">
+                    Tipos de rede proteção
+                </a>
+            </li>
+            <li class="active">Editar</li>
+        </ul>
+    </div>
+
+    <div class="row">
+        <div class="container col-lg-6" style="float: none;">
+
+            <h2>
+                Editar tipo de rede proteção
+
+                <a href="javascript:history.back();" class="back">
+                    <i class="glyphicon glyphicon-chevron-left"></i> voltar
+                </a>
+
+            </h2>
+
+            <form class="form-horizontal" action="{% url 'app_typesprotectionnetworkedit' current_type.id %}"
+                  method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <fieldset>
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#pt" data-toggle="tab" aria-expanded="true">Português</a></li>
+                        <li class=""><a href="#en" data-toggle="tab" aria-expanded="false">English</a></li>
+                        <li class=""><a href="#es" data-toggle="tab" aria-expanded="false">Español</a></li>
+                    </ul>
+                    <div id="myTabContent" class="tab-content">
+                        <div class="tab-pane fade active in" id="pt">
+                            <div class="form-group">
+                                <div class="col-lg-12">
+                                    <label for="id_name_pt">{{ form_info.name_pt.label }}</label>
+                                    {{ form_info.name_pt }}
+                                    {{ form_info.name_pt.errors }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="en">
+                            <div class="form-group">
+                                <div class="col-lg-12">
+                                    <label for="id_name_en">{{ form_info.name_en.label }}</label>
+                                    {{ form_info.name_en }}
+                                    {{ form_info.name_en.errors }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="es">
+                            <div class="form-group">
+                                <div class="col-lg-12">
+                                    <label for="id_name_es">{{ form_info.name_es.label }}</label>
+                                    {{ form_info.name_es }}
+                                    {{ form_info.name_es.errors }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-6">
+                            <label for="id_color">Cor</label>
+                            {{ form.color }}
+                            {{ form.color.errors }}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-12">
+                            <label for="id_icon">Ícone</label>
+                            {{ form.icon }}
+                            {{ form.icon.errors }}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-lg-12">
+                            <button type="submit" class="btn btn-primary right">Salvar</button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+
+        </div>
+    </div>
+
+
+
+{% endblock %}
