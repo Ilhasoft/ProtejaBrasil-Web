@@ -1,0 +1,48 @@
+# Attention:
+# Use this docker-compose to:
+# - Up development environment: docker-compose up
+# - Build docker images: docker-compose build
+
+version: '3.6'
+
+services:
+  database:
+      image: postgres
+      ports:
+        - 5432:5432
+      networks:
+        - default
+        - protejabrasil
+      environment:
+        - POSTGRES_USER=${POSTGRES_USER:-protejabrasil}
+        - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-protejabrasil}
+        - POSTGRES_DB=${POSTGRES_DB:-protejabrasil}
+  bothub:
+    image: ${DOCKER_IMAGE_NAME:-ilha/protejabrasil}:${TAG:-latest}
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - ${ENGINE_PORT:-80}:80
+    networks:
+      - default
+      - protejabrasil
+    environment:
+      - SECRET_KEY=${SECRET_KEY:-SK}
+      - DEBUG=${DEBUG:-false}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS:-*}
+      - DEFAULT_DATABASE=${DEFAULT_DATABASE:-postgres://protejabrasil:protejabrasil@database:5432/protejabrasil}
+      - LANGUAGE_CODE=${LANGUAGE_CODE:-pt-br}
+      - TIME_ZONE=${TIME_ZONE:-America/Maceio}
+      - DEFAULT_FROM_EMAIL=${DEFAULT_FROM_EMAIL:-webmaster@localhost}
+      - SERVER_EMAIL=${SERVER_EMAIL:-root@localhost}
+      - EMAIL_PORT=${EMAIL_PORT:-25}
+      - EMAIL_HOST_USER=${EMAIL_HOST_USER}
+      - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
+      - EMAIL_USE_SSL=${EMAIL_USE_SSL:-false}
+      - EMAIL_USE_TLS=${EMAIL_USE_TLS:-false}
+      - EMAIL_ALIAS=${EMAIL_ALIAS}
+
+networks:
+  protejabrasil:
+    external: true
