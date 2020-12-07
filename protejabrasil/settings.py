@@ -10,23 +10,44 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import environ
 import django.conf.global_settings as DEFAULT_SETTINGS
 
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+
+environ.Env.read_env(env_file=(environ.Path(__file__) - 2)(".env"))
+
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False),
+    ALLOWED_HOSTS=(lambda v: [s.strip() for s in v.split(",")], "*"),
+    LANGUAGE_CODE=(str, "pt-br"),
+    TIME_ZONE=(str, "America/Maceio"),
+    EMAIL_HOST=((lambda v: v or None), None),
+    DEFAULT_FROM_EMAIL=(str, "webmaster@localhost"),
+    SERVER_EMAIL=(str, "root@localhost"),
+    EMAIL_PORT=(int, 25),
+    EMAIL_HOST_USER=(str, ""),
+    EMAIL_HOST_PASSWORD=(str, ""),
+    EMAIL_USE_SSL=(bool, False),
+    EMAIL_USE_TLS=(bool, False),
+    EMAIL_ALIAS=(str, ""),
+)
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'your_secret_key'
+SECRET_KEY = env.str("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = env.bool("DEBUG")
 
 TEMPLATE_DEBUG = DEBUG
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 
 GEOPOSITION_MAP_OPTIONS = {
     'minZoom': 3,
@@ -102,16 +123,7 @@ WSGI_APPLICATION = 'protejabrasil.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'your_db',
-        'USER': 'your_user',
-        'PASSWORD': 'your_password',
-        'HOST': 'your_host',
-        'PORT': '5432',
-    }
-}
+DATABASES = {"default": env.db(var="DEFAULT_DATABASE", default="sqlite:///db.sqlite3")}
 
 SITE_URL = 'protejabrasil.ilhasoft.mobi'
 
@@ -136,9 +148,9 @@ REST_FRAMEWORK = {
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 
-LANGUAGE_CODE = 'pt-br'
+LANGUAGE_CODE = env.str("LANGUAGE_CODE")
 
-TIME_ZONE = 'America/Maceio'
+TIME_ZONE = env.str("TIME_ZONE")
 
 USE_I18N = True
 
@@ -175,14 +187,14 @@ TEMPLATE_CONTEXT_PROCESSORS = (
                                   'apps.utils.custom_context_processors.custom_context_processors.user_auth',
                               ) + DEFAULT_SETTINGS.TEMPLATE_CONTEXT_PROCESSORS
 
-DEFAULT_FROM_EMAIL = 'your_from_email'
-SERVER_EMAIL = 'your_server_email'
-EMAIL_HOST = 'your_email_host'
-EMAIL_HOST_USER = 'your_email_host_user'
-EMAIL_HOST_PASSWORD = 'your_email_host_password'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_ALIAS = 'your_email_alias'
+DEFAULT_FROM_EMAIL = env.str("DEFAULT_FROM_EMAIL")
+SERVER_EMAIL = env.str("SERVER_EMAIL")
+EMAIL_HOST = env.str("EMAIL_HOST")
+EMAIL_HOST_USER = env.str("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = env.str("EMAIL_HOST_PASSWORD")
+EMAIL_PORT = env.int("EMAIL_PORT")
+EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS")
+EMAIL_ALIAS = env.str("EMAIL_ALIAS")
 
 SWAGGER_SETTINGS = {
     'api_version': '0.1',
