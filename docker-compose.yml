@@ -17,7 +17,7 @@ services:
         - POSTGRES_USER=${POSTGRES_USER:-protejabrasil}
         - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-protejabrasil}
         - POSTGRES_DB=${POSTGRES_DB:-protejabrasil}
-  bothub:
+  protejabrasil:
     image: ${DOCKER_IMAGE_NAME:-ilha/protejabrasil}:${TAG:-latest}
     build:
       context: .
